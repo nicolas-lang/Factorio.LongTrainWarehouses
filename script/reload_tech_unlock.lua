@@ -25,4 +25,4 @@ local function script_on_configuration_changed()
 	end
 end
 -------------------------------------------------------------------------------------
-script.on_configuration_changed( script_on_configuration_changed )
+script.on_configuration_changed(script_on_configuration_changed)

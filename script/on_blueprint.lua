@@ -19,22 +19,24 @@ local function on_blueprint(event)
 	end
 	for _, e in ipairs(entities) do
 		local whType = lib_warehouse.checkEntityName(e.name)
-		if data_util.has_value({"horizontal","vertical"}, whType) then
+		if data_util.has_value({ "horizontal", "vertical" }, whType) then
 			--log("save inventory filters, requests for h/v. A proxy copied from a ghost should have inherited the tags")
-			local searchResult = player.surface.find_entities_filtered({force = e.force, name = e.name, position = e.position, radius = 0.001})
+			local searchResult = player.surface.find_entities_filtered({ force = e.force, name = e.name, position = e
+			.position, radius = 0.001 })
 			--log(#searchResult)
 			for _, ent in pairs(searchResult) do
 				local inventory = ent.get_inventory(defines.inventory.chest)
 				local request_slots = ""
 				local filter_slot = ""
-				for slotIndex = 1,ent.request_slot_count,1 do
+				for slotIndex = 1, ent.request_slot_count, 1 do
 					local slot = ent.get_request_slot(slotIndex)
 					if slot then
-						request_slots = ((request_slots == "" and request_slots) or (request_slots..";"))..tostring(slotIndex)..":"..slot.name..":"..tostring(slot.count)
+						request_slots = ((request_slots == "" and request_slots) or (request_slots .. ";")) ..
+						tostring(slotIndex) .. ":" .. slot.name .. ":" .. tostring(slot.count)
 					end
 				end
 				if ent.filter_slot_count and ent.filter_slot_count > 0 and ent.storage_filter then
-					filter_slot = ent.storage_filter.type..":"..ent.storage_filter.name
+					filter_slot = ent.storage_filter.type .. ":" .. ent.storage_filter.name
 				end
 				e.tags = {
 					request_slots = (request_slots ~= "" and request_slots or nil),
@@ -45,9 +47,9 @@ local function on_blueprint(event)
 			end
 			--log("change to proxy")
 			if whType == "horizontal" then
-				e.name =  e.name:gsub("-h", "-proxy")
+				e.name = e.name:gsub("-h", "-proxy")
 			elseif whType == "vertical" then
-				e.name =  e.name:gsub("-v", "-proxy")
+				e.name = e.name:gsub("-v", "-proxy")
 				e.direction = defines.direction.west
 			end
 		end
