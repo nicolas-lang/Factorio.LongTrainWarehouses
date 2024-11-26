@@ -4,16 +4,16 @@ myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-bg-left.p
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-bg-mid.png"] = { width = 897, height = 215 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-bg-right.png"] = { width = 391, height = 215 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-bg.png"] = { width = 1676, height = 215 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-building.png"] = { width = 202, height = 80 }
+
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-bg-left.png"] = { width = 268, height = 391 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-bg-mid.png"] = { width = 268, height = 897 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-bg-right.png"] = { width = 268, height = 391 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-bg.png"] = { width = 268, height = 1677 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-building.png"] = { width = 64, height = 213 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole-shadow.png"] = { width = 188, height = 48 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png"] = { width = 74, height = 151 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/warehouse-h-building.png"] = { width = 951, height = 340 }
-myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/warehouse-v-building.png"] = { width = 256, height = 852 }
+
+myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole-shadow.png"] = { width = 188, height = 48 }
+myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole.png"] = { width = 74, height = 151 }
+myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-h-building.png"] = { width = 951, height = 340 }
+myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/warehouse-v-building.png"] = { width = 256, height = 852 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/icons/addon-power-pole.png"] = { width = 64, height = 64 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/icons/error.png"] = { width = 64, height = 64 }
 myGlobal.imageInfo["__nco-LongWarehouses__/graphics/icons/tech-warehouses-logistics.png"] = { width = 64, height = 64 }
