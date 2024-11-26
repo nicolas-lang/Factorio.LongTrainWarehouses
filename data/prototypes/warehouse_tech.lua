@@ -20,8 +20,8 @@ local whTech = {
 	unit = {
 		count = 150,
 		ingredients = {
-			{ "automation-science-pack", 1 },
-			{ "logistic-science-pack",   2 },
+			{ type = "item", name = "automation-science-pack", amount = 1 },
+			{ type = "item", name = "logistic-science-pack", amount = 2 },
 		},
 		time = 30
 	},

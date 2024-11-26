@@ -29,8 +29,14 @@ end
 function ghost_util.register_ghost(entity)
 	local key = string.format("%s:%s:%s:%d:%d", entity.surface.name, entity.force.name, entity.ghost_name,
 		entity.position.x, entity.position.y)
-	ghost_util.ghosts[key] = { entity = entity, position = entity.position, ghost_name = entity.ghost_name, surface =
-	entity.surface, force = entity.force, key = key }
+	ghost_util.ghosts[key] = {
+		entity = entity,
+		position = entity.position,
+		ghost_name = entity.ghost_name,
+		surface = entity.surface,
+		force = entity.force,
+		key = key
+	}
 	ghost_util.ghostcount = ghost_util.ghostcount + 1
 end
 

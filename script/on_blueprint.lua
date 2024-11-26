@@ -17,33 +17,81 @@ local function on_blueprint(event)
 	if not entities then
 		return
 	end
-	for _, e in ipairs(entities) do
+	for idx, e in ipairs(entities) do
 		local whType = lib_warehouse.checkEntityName(e.name)
 		if data_util.has_value({ "horizontal", "vertical" }, whType) then
 			--log("save inventory filters, requests for h/v. A proxy copied from a ghost should have inherited the tags")
-			local searchResult = player.surface.find_entities_filtered({ force = e.force, name = e.name, position = e
-			.position, radius = 0.001 })
+			local searchResult = player.surface.find_entities_filtered({
+				force = e.force,
+				name = e.name,
+				position = e.position,
+				radius = 0.001
+			})
 			--log(#searchResult)
 			for _, ent in pairs(searchResult) do
-				local inventory = ent.get_inventory(defines.inventory.chest)
-				local request_slots = ""
-				local filter_slot = ""
-				for slotIndex = 1, ent.request_slot_count, 1 do
-					local slot = ent.get_request_slot(slotIndex)
-					if slot then
-						request_slots = ((request_slots == "" and request_slots) or (request_slots .. ";")) ..
-						tostring(slotIndex) .. ":" .. slot.name .. ":" .. tostring(slot.count)
+				log("ent.prototype.type: " .. serpent.block(ent.prototype.type))
+				-- Logistic Filters
+				local requests = {}
+				local flags = {}
+				if tostring(ent.prototype.type) == "logistic-container" then
+					log("Evaluating Logistic Filters")
+					local logistic_point = ent.get_logistic_point(0)
+					--log("sections_count" .. serpent.block(logistic_point.sections_count))
+					for sectionIndex = 1, logistic_point.sections_count, 1 do
+						local logistic_section = logistic_point.get_section(sectionIndex)
+						--log("logistic_section" .. serpent.block(logistic_section))
+						if (logistic_section.is_manual) then
+							local section_export = {
+								group = logistic_section.group,
+								multiplier = logistic_section.multiplier,
+								logistic_filters = {}
+							}
+							for slotIndex = 1, logistic_section.filters_count, 1 do
+								local slot = logistic_section.get_slot(slotIndex)
+								--log("slot" .. serpent.block(slot))
+								table.insert(section_export.logistic_filters, {
+									import_from = slot.import_from.name,
+									min = slot.min,
+									max = slot.max,
+									value = {
+										comparator = slot.value.comparator,
+										name = slot.value.name,
+										quality = slot.value.quality
+									}
+								})
+							end
+							table.insert(requests, section_export)
+						end
 					end
 				end
-				if ent.filter_slot_count and ent.filter_slot_count > 0 and ent.storage_filter then
-					filter_slot = ent.storage_filter.type .. ":" .. ent.storage_filter.name
+				-- logistic Filter
+				local logistic_filter = {}
+				if ent.filter_slot_count and ent.filter_slot_count > 0 then
+					local filter = ent.get_filter(1)
+					if (filter) then
+						logistic_filter = {
+							comparator = filter.comparator,
+							name = filter.name.name, -- name is ItemId which resolves (here) to ItemPrototype
+							quality = filter.quality.name -- like name
+						}
+					end
 				end
+
+				if (ent.prototype.logistic_mode == "requester") then
+					flags.request_from_buffers = ent.request_from_buffers
+				end
+
+				-- Locked Slots
+				local inventory = ent.get_inventory(defines.inventory.chest)
+				local bar = (inventory.get_bar() <= #inventory and inventory.get_bar() or nil)
 				e.tags = {
-					request_slots = (request_slots ~= "" and request_slots or nil),
-					storage_filter = (filter_slot ~= "" and filter_slot or nil),
-					bar = (inventory.get_bar() <= #inventory and inventory.get_bar() or nil),
+					logistic_requests = (not data_util.is_empty_table(requests) and requests or nil),
+					logistic_filter = (not data_util.is_empty_table(logistic_filter) and logistic_filter or nil),
+					flags = (not data_util.is_empty_table(flags) and flags or nil),
+					bar = bar
 				}
-				--log("set blueprint entity tags for "..ent.name.." to:"..serpent.block(e.tags, {comment = false, numformat = '%1.8g', compact = true } ))
+				log("set blueprint entity tags for " ..
+					ent.name .. " to:" .. serpent.block(e.tags, { comment = false, numformat = '%1.8g', compact = true }))
 			end
 			--log("change to proxy")
 			if whType == "horizontal" then

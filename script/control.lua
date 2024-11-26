@@ -109,8 +109,12 @@ function myControl.validate_warehouse(position, force, surface, deconstructing)
 	if wh.entityType == 'entity' and pole.entityType == 'entity-ghost' then
 		-- ghost state of warehouse and pole is synchronized, the pole is never built, but rather script-revived when the warehouse is constructed
 		pole.entity.revive()
-		searchResult = surface.find_entities_filtered({ force = force, position = position, name =
-		"warehouse-signal-pole", radius = 0.001 })
+		searchResult = surface.find_entities_filtered({
+			force = force,
+			position = position,
+			name = "warehouse-signal-pole",
+			radius = 0.001
+		})
 		for _, entity in pairs(searchResult) do
 			pole.entity = entity
 			pole.entityType = "entity"
@@ -145,8 +149,12 @@ function myControl.validate_warehouse(position, force, surface, deconstructing)
 	end
 	if pole.entityType == 'entity' and wh.entityType == 'entity' then
 		-- the pole is always connected to it's wh
-		pole.entity.connect_neighbour({ wire = defines.wire_type.red, target_entity = wh.entity })
-		pole.entity.connect_neighbour({ wire = defines.wire_type.green, target_entity = wh.entity })
+		pole.entity
+			.get_wire_connector(defines.wire_connector_id.circuit_red, true)
+			.connect_to(wh.entity.get_wire_connector(defines.wire_connector_id.circuit_red, true))
+		pole.entity
+			.get_wire_connector(defines.wire_connector_id.circuit_green, true)
+			.connect_to(wh.entity.get_wire_connector(defines.wire_connector_id.circuit_green, true))
 	end
 end
 
@@ -195,7 +203,7 @@ function myControl.on_built_proxy(proxy, tags)
 		position = proxy.position,
 		force = proxy.force,
 		last_user = proxy.last_user,
-		direction = proxy.direction % 4
+		direction = proxy.direction
 	}
 	if proxyData.direction == defines.direction.east or proxyData.direction == defines.direction.west then
 		proxyData.structure_name = proxy.name:gsub("-proxy", "-v")
@@ -212,35 +220,57 @@ function myControl.on_built_proxy(proxy, tags)
 		player = proxyData.last_user
 	}
 	--set inventory configuration from blueprint tags
-	local searchResult = proxyData.surface.find_entities_filtered({ force = proxyData.force, name = proxyData
-	.structure_name, position = proxyData.position, radius = 0.001 })
+	local searchResult = proxyData.surface.find_entities_filtered({
+		force = proxyData.force,
+		name = proxyData.structure_name,
+		position = proxyData.position,
+		radius = 0.001
+	})
 	--log(#searchResult)
 	for _, wh in pairs(searchResult) do
-		--log("configuring "..wh.name)
-		local whPrototype = game.entity_prototypes[wh.name]
+		log("configuring " .. wh.name .. " with tags "
+			.. serpent.block(tags, { comment = false, numformat = '%1.8g', compact = true }))
+		local whPrototype = prototypes.entity[wh.name]
 		--locked slots
 		if tags and tags.bar then
-			--log("configuring locked slots")
+			log("configuring locked slots")
 			wh.get_inventory(defines.inventory.chest).set_bar(tags.bar)
 		end
 		-- requests/buffer-requests
-		if (tags and tags.request_slots) then
-			if (whPrototype.type == "logistic-container" and data_util.has_value({ "requester", "buffer" }, whPrototype.logistic_mode)) then
-				--log("configuring request slots")
-				for _, request_slot in pairs(data_util.csv_split(tags.request_slots, ";")) do
-					local slotInfo = data_util.csv_split(request_slot, ":")
-					wh.set_request_slot({ name = slotInfo[2], count = tonumber(slotInfo[3]) }, slotInfo[1])
+		if (tags and tags.logistic_requests) then
+			if (whPrototype.type == "logistic-container" and data_util.has_value({ "requester", "buffer", "storage" }, whPrototype.logistic_mode)) then
+				local logistic_point = wh.get_logistic_point(0)
+				log("configuring request")
+				for section_index = 1, logistic_point.sections_count, 1 do
+					local logistic_section = logistic_point.get_section(section_index)
+					if (logistic_section.is_manual) then
+						logistic_point.remove_section(section_index)
+					end
+				end
+				for _, request_group in pairs(tags.logistic_requests) do
+					local group = logistic_point.add_section(request_group.group)
+					group.multiplier = request_group.multiplier
+					for i, filter in pairs(request_group.logistic_filters) do
+						group.set_slot(i, filter)
+					end
+					if (whPrototype.logistic_mode == "storage") then
+						break
+					end
 				end
 			else
 				game.print({ "custom-strings.warning-type-changed" }, { r = 0.75, g = 0.5, b = 0.25, a = 0 })
+				log("warning-type-changed")
+				log("logistic_mode:" .. whPrototype.logistic_mode)
+			end
+			if (whPrototype.logistic_mode == "requester" and tags.flags) then
+				wh.request_from_buffers = (tags.flags.request_from_buffers == true)
 			end
 		end
 		-- logistic filter
-		if (tags and tags.storage_filter) then
+		if (tags and tags.logistic_filter) then
 			if (whPrototype.type == "logistic-container" and whPrototype.logistic_mode == "storage") then
-				--log("configuring storage filter")
-				local slotInfo    = data_util.csv_split(tags.storage_filter, ":")
-				wh.storage_filter = game.item_prototypes[slotInfo[2]]
+				log("configuring storage filter")
+				wh.set_filter(1, tags.logistic_filter)
 			else
 				game.print({ "custom-strings.warning-type-changed" }, { r = 0.75, g = 0.5, b = 0.25, a = 0 })
 			end

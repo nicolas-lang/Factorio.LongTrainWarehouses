@@ -6,7 +6,7 @@ local signalPole = {
 	type = "programmable-speaker",
 	name = "warehouse-signal-pole",
 	collision_box = { { -0.01, -0.01 }, { 0.01, 0.01 } },
-	collision_mask = { "colliding-with-tiles-only" },
+	collision_mask = { layers = {}, colliding_with_tiles_only = true },
 	selection_box = { { -0.65, -0.65 }, { 0.65, 0.65 } },
 	selection_priority = 150,
 	energy_source = {
@@ -47,10 +47,10 @@ local signalPole = {
 		"not-deconstructable",
 		"player-creation",
 		"not-on-map",
-		"hidden",
 		"hide-alt-info",
 		"placeable-off-grid"
 	},
+	hidden = true,
 	icon = poleIcon,
 	icon_size = myGlobal.imageInfo[poleIcon].width,
 	icon_mipmaps = 1,
@@ -63,9 +63,9 @@ local signalPole = {
 		layers = {
 			{
 				direction_count = 1,
-				filename = "__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png",
-				width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png"].width,
-				height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png"].height,
+				filename = "__nco-LongWarehouses__/graphics/entity/addon-power-pole.png",
+				width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole.png"].width,
+				height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole.png"].height,
 				shift = util.by_pixel(0, -23),
 				scale = 0.5,
 			}
@@ -76,7 +76,7 @@ local signalPole = {
 --signalPole.radius_visualisation_picture = util.table.deepcopy(data.raw["electric-pole"]["small-electric-pole"].radius_visualisation_picture)
 signalPole.resistances = util.table.deepcopy(data.raw["electric-pole"]["small-electric-pole"].resistances)
 signalPole.vehicle_impact_sound = util.table.deepcopy(data.raw["electric-pole"]["small-electric-pole"]
-.vehicle_impact_sound)
+	.vehicle_impact_sound)
 signalPole.operable = false
 --signalPole.water_reflection = util.table.deepcopy(data.raw["electric-pole"]["small-electric-pole"].water_reflection)
 --signalPole.damaged_trigger_effect = util.table.deepcopy(data.raw["electric-pole"]["small-electric-pole"].damaged_trigger_effect)
@@ -84,9 +84,7 @@ data:extend({ signalPole })
 
 local signalPoleItm = {
 	type = "item",
-	flags = {
-		"hidden"
-	},
+	hidden = true,
 	name = "warehouse-signal-pole",
 	icon = poleIcon,
 	icon_size = myGlobal.imageInfo[poleIcon].width,

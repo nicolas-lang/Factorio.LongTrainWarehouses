@@ -28,9 +28,18 @@ function lib_warehouse.getWHData(unitSize, whType, sizeScaling, suffix)
 		whInvSize = math.min(whInvSize, 540)
 	end
 	local whHealth = 500 + unitSize * 250
-	return { whNameBase = whNameBase, whSizeName = whSizeName, whSizeNameAdvanced = whSizeNameAdvanced, whTypeName =
-	whTypeName, whGroupName = whGroupName, whName = whName, gridSize = gridSize, whInvSize = whInvSize, whHealth =
-	whHealth, sortOrder = sortOrder }
+	return {
+		whNameBase = whNameBase,
+		whSizeName = whSizeName,
+		whSizeNameAdvanced = whSizeNameAdvanced,
+		whTypeName = whTypeName,
+		whGroupName = whGroupName,
+		whName = whName,
+		gridSize = gridSize,
+		whInvSize = whInvSize,
+		whHealth = whHealth,
+		sortOrder = sortOrder
+	}
 end
 
 -------------------------------------------------------------------------------------
@@ -78,12 +87,12 @@ end
 
 -------------------------------------------------------------------------------------
 function lib_warehouse.getWHIngredients(unitSize, logisticType, subType)
-	local initialScore = math.pow(2, unitSize) * 55
+	local initialScore = (2 ^ unitSize) * 55
 	local resourceScore = initialScore
 	local ingredients = {}
 	local WHparent = lib_warehouse.getWHParent(unitSize, logisticType, subType)
 	if WHparent then
-		table.insert(ingredients, { WHparent.whName, 1 })
+		table.insert(ingredients, { type = "item", name = WHparent.whName, amount = 1 })
 		resourceScore = resourceScore / 2
 	end
 	local resourceCount = math.min(5, unitSize)
@@ -119,7 +128,7 @@ function lib_warehouse.getWHIngredientsByScore(resourceScore, resourceTable, max
 			if cnt > 0 and i < maxcount then
 				i = i + 1
 				resourceScore = resourceScore - res.val * cnt
-				table.insert(ingredients, { res.name, cnt })
+				table.insert(ingredients, { type = "item", name = res.name, amount = cnt })
 			end
 		end
 	end
@@ -128,7 +137,7 @@ end
 
 --=================================================================================--
 function lib_warehouse.buildSpriteLayer(baseName, entityType, unitSize, direction)
-	local imageFile, imageFileHr, shft
+	local imageFile, shft
 	local entityData = lib_warehouse.getWHData(unitSize, entityType, 0, direction)
 	local layers = {}
 	local bgTint = { r = 0.6, g = 0.6, b = 0.8, a = 0.9 }
@@ -208,7 +217,6 @@ function lib_warehouse.buildSpriteLayer(baseName, entityType, unitSize, directio
 	--buildings
 	-------------------------------------------------------------------------------------
 	imageFile = "__nco-LongWarehouses__/graphics/entity/" .. baseName .. "-" .. direction .. "-building.png"
-	imageFileHr = "__nco-LongWarehouses__/graphics/entity/hr/" .. baseName .. "-" .. direction .. "-building.png"
 	for i = 1, unitSize do
 		shft = {
 			-(32 * entityData.gridSize / 2) + (32 * 6 / 2 + 5) + ((i - 1) * 32 * 7) - 5,
@@ -222,28 +230,22 @@ function lib_warehouse.buildSpriteLayer(baseName, entityType, unitSize, directio
 			width = myGlobal.imageInfo[imageFile].width,
 			height = myGlobal.imageInfo[imageFile].height,
 			shift = util.by_pixel(shft[1], shft[2]),
-			hr_version = {
-				filename = imageFileHr,
-				width = myGlobal.imageInfo[imageFileHr].width,
-				height = myGlobal.imageInfo[imageFileHr].height,
-				shift = util.by_pixel(shft[1], shft[2]),
-				scale = 0.25,
-			}
+			scale = 0.25,
 		})
 	end
 	--Power Pole - part of the wh because i cant make it display properly in front of the building
 	table.insert(layers, {
-		filename = "__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png",
-		width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png"].width,
-		height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole.png"].height,
+		filename = "__nco-LongWarehouses__/graphics/entity/addon-power-pole.png",
+		width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole.png"].width,
+		height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole.png"].height,
 		shift = util.by_pixel(0, -23),
 		scale = 0.5,
 	})
 	table.insert(layers, {
 		draw_as_shadow = true,
-		filename = "__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole-shadow.png",
-		width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole-shadow.png"].width,
-		height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/hr/addon-power-pole-shadow.png"].height,
+		filename = "__nco-LongWarehouses__/graphics/entity/addon-power-pole-shadow.png",
+		width = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole-shadow.png"].width,
+		height = myGlobal.imageInfo["__nco-LongWarehouses__/graphics/entity/addon-power-pole-shadow.png"].height,
 		shift = util.by_pixel(28, 0),
 		scale = 0.5,
 	})

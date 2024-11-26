@@ -33,6 +33,11 @@ function data_util.has_value(tab, val)
 end
 
 -------------------------------------------------------------------------------------
+function data_util.is_empty_table(t)
+	return t == nil or next(t) == nil
+end
+
+-------------------------------------------------------------------------------------
 function data_util.getResearchUnitIngredients(technology_name)
 	local technology = data_util.getTechnologyFromName(technology_name)
 	if technology and next(technology) ~= nil then

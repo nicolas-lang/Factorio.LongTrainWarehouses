@@ -21,9 +21,9 @@ local function makeWarehouseProxy(unitSize, logisticType)
 		type = "recipe",
 		name = whData.whName,
 		energy_required = 20,
-		enabled = "false",
+		enabled = false,
 		ingredients = lib_warehouse.getWHIngredients(unitSize, logisticType, "proxy"),
-		result = whData.whName,
+		results = { { type = "item", name = whData.whName, amount = 1 } },
 		icons = lib_warehouse.getWHIcon(unitSize, logisticType),
 		subgroup = "cust-warehouse",
 		order = whData.sortOrder,
@@ -39,7 +39,7 @@ local function makeWarehouseProxy(unitSize, logisticType)
 		place_result = whData.whName,
 		stack_size = 5,
 		localised_name = { "item-name.cust-warehouse", { "custom-strings.cust-warehouse-name-" .. logisticType }, whData.whSizeNameAdvanced },
-		localised_description = { "item-description.cust-warehouse", whData.whSizeNameAdvanced, whData.whInvSize }
+		localised_description = { "item-description.cust-warehouse", whData.whSizeNameAdvanced, tostring(whData.whInvSize) }
 	}
 	local whProxEnt = {
 		--should never be placed for more than 1 tick, unless it is a ghost
@@ -52,7 +52,7 @@ local function makeWarehouseProxy(unitSize, logisticType)
 		max_health = 100,
 		collision_box = { { -(whSizeA / 2 - 0.01), -(whSizeB / 2 - 0.01) }, { (whSizeA / 2 - 0.01), (whSizeB / 2 - 0.01) } },
 		selection_box = { { -(whSizeA / 2), -(whSizeB / 2) }, { (whSizeA / 2), (whSizeB / 2) } },
-		fluid_box = { pipe_connections = {} },
+		fluid_box = { pipe_connections = {}, volume = 100 },
 		energy_usage = "0kW",
 		energy_source = { type = "void" },
 		pumping_speed = 0,
@@ -62,7 +62,7 @@ local function makeWarehouseProxy(unitSize, logisticType)
 		circuit_connector_sprites = circuit_connector_definitions["pump"].sprites,
 		circuit_wire_max_distance = 0.0001,
 		localised_name = { "item-name.cust-warehouse", { "custom-strings.cust-warehouse-name-" .. logisticType }, whData.whSizeNameAdvanced },
-		localised_description = { "item-description.cust-warehouse", whData.whSizeNameAdvanced, whData.whInvSize }
+		localised_description = { "item-description.cust-warehouse", whData.whSizeNameAdvanced, tostring(whData.whInvSize) }
 	}
 	-------------------------------------------------------------------------------------
 	--===================================================================================
@@ -95,14 +95,14 @@ local function makeWarehouse(unitSize, logisticType, subType)
 	local whRec = {
 		--never used, just required as a dummy
 		type = "recipe",
-		hidden = "true",
-		enabled = "false",
-		hide_from_player_crafting = "true",
-		hide_from_stats = "true",
+		hidden = true,
+		enabled = false,
+		hide_from_player_crafting = true,
+		hide_from_stats = true,
 		name = whData.whName,
 		energy_required = 20,
-		ingredients = { { "coal", 1 } },
-		result = whData.whName,
+		ingredients = { { type = "item", name = "coal", amount = 1 } },
+		results = { { type = "item", name = whData.whName, amount = 1 } },
 		icons = lib_warehouse.getWHIcon(unitSize, logisticType),
 		subgroup = "cust-warehouse",
 		order = whData.sortOrder
@@ -113,9 +113,7 @@ local function makeWarehouse(unitSize, logisticType, subType)
 	local whItm = {
 		--never used, just required as a dummy
 		type = "item",
-		flags = {
-			"hidden"
-		},
+		hidden = true,
 		name = whData.whName,
 		icons = lib_warehouse.getWHIcon(unitSize, logisticType),
 		subgroup = "cust-warehouse",
