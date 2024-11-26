@@ -1,15 +1,15 @@
 {
 	"name": "nco-LongWarehouses",
-	"version": "0.2.6",
+	"version": "2.0.0",
 	"title": "Long Warehouses",
 	"author": "Karoschl",
 	"contact": "",
 	"homepage": "",
 	"description": "Adds very long warehouses for train stations to the game.",
-	"factorio_version": "1.1",
+	"factorio_version": "2.0",
 	"dependencies": [
-		"base >= 1.0",
-		"(?) Krastorio2 >= 0.9.9",
-		"(?) aai-containers >= 0.2.8"
+		"base",
+		"(?) Krastorio2",
+		"(?) aai-containers"
 	]
 }
