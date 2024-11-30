@@ -1,3 +1,8 @@
+-------------------------------------------------------------------------------------
+local wire_connector_red = defines.wire_connector_id.circuit_red     -- luacheck: ignore 143
+local wire_connector_green = defines.wire_connector_id.circuit_green -- luacheck: ignore 143
+local prototypes = _G.prototypes                                     -- luacheck: ignore 113
+-------------------------------------------------------------------------------------
 local myGlobal = require("__nco-LongWarehouses__/lib/nco_data")
 local lib_warehouse = require("__nco-LongWarehouses__/lib/lib_warehouse")
 local data_util = require("__nco-LongWarehouses__/lib/data_util")
@@ -150,11 +155,11 @@ function myControl.validate_warehouse(position, force, surface, deconstructing)
 	if pole.entityType == 'entity' and wh.entityType == 'entity' then
 		-- the pole is always connected to it's wh
 		pole.entity
-			.get_wire_connector(defines.wire_connector_id.circuit_red, true)
-			.connect_to(wh.entity.get_wire_connector(defines.wire_connector_id.circuit_red, true))
+			.get_wire_connector(wire_connector_red, true)
+			.connect_to(wh.entity.get_wire_connector(wire_connector_red, true))
 		pole.entity
-			.get_wire_connector(defines.wire_connector_id.circuit_green, true)
-			.connect_to(wh.entity.get_wire_connector(defines.wire_connector_id.circuit_green, true))
+			.get_wire_connector(wire_connector_green, true)
+			.connect_to(wh.entity.get_wire_connector(wire_connector_green, true))
 	end
 end
 

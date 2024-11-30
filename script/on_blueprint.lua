@@ -17,7 +17,7 @@ local function on_blueprint(event)
 	if not entities then
 		return
 	end
-	for idx, e in ipairs(entities) do
+	for _, e in ipairs(entities) do
 		local whType = lib_warehouse.checkEntityName(e.name)
 		if data_util.has_value({ "horizontal", "vertical" }, whType) then
 			--log("save inventory filters, requests for h/v. A proxy copied from a ghost should have inherited the tags")
